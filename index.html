@@ -47,11 +47,47 @@ input,textarea{width:100%;background:#0b1015;color:white;border:1px solid #34404
 
 <script>
 const workouts=[
-{name:'Workout A — Upper + core',days:[1],desc:'Build muscle • shoulder-aware',ex:[['Incline dumbbell press','3 x 8–12'],['Chest-supported row','3 x 8–12'],['Neutral-grip lat pulldown','3 x 8–12'],['Cable lateral raise (comfortable range)','3 x 12–15'],['Cable external rotation','2 x 12–15'],['Dumbbell curl','3 x 10–12'],['Rope pressdown','3 x 10–12'],['Dead bug','3 x 8/side']]},
-{name:'Workout B — Full body + core',days:[3],desc:'Muscle • controlled lower body • shoulder aware',ex:[['Supported split squat / prescribed alternative','3 x 8–10'],['Hip thrust','3 x 8–12'],['Seated cable row','3 x 8–12'],['Machine chest press (comfortable range)','3 x 8–12'],['Face pull','3 x 12–15'],['Hammer curl','3 x 10–12'],['Pallof press','3 x 10/side']]},
-{name:'Workout C — Upper + arms',days:[5],desc:'Upper-body hypertrophy • shoulder stability',ex:[['Landmine press or comfortable press variation','3 x 8–12'],['One-arm cable row','3 x 8–12'],['Assisted pull-up / pulldown','3 x 8–12'],['Rear-delt fly','3 x 12–15'],['Cable external rotation','2 x 12–15'],['EZ-bar or dumbbell curl','3 x 8–12'],['Overhead rope extension if pain-free','3 x 10–12'],['Side plank','3 x 30–45 sec/side']]},
-{name:'Weekly stretch',days:[0],desc:'Once per week • gentle mobility',ex:[['Full-body mobility','20–30 minutes'],['Shoulder mobility','5–10 minutes'],['Gentle hip/ankle mobility','5–10 minutes']]},
-{name:'Optional Pilates',days:[],desc:'At home every 1–2 weeks • optional',ex:[['Pilates session','20–40 minutes, knee-safe']] }
+{name:'Monday — Upper Body + Shoulder + Knee Rehab',days:[1],desc:'Approx. 60 minutes total',sections:[
+['Warm-up — 5 min','5 minutes easy cardio + gentle shoulder mobility'],
+['Shoulder preparation — 5 min','Band external rotations • face pulls • controlled mobility'],
+['Main workout — 35 min','Incline dumbbell press — 3 x 8–12|Chest-supported row — 3 x 8–12|Neutral-grip lat pulldown — 3 x 8–12|Cable lateral raise (comfortable range) — 3 x 12–15|Dumbbell curl — 2 x 10–12|Rope pressdown — 2 x 10–12'],
+['Core — 5 min','Dead bug — 3 x 8/side'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Tuesday — Walk / Active Recovery',days:[2],desc:'Easy activity + 10-minute knee rehab',sections:[
+['Walk / activity — 30–45 min','Comfortable walk or other knee-safe active recovery'],
+['Shoulder mobility — 5 min','Gentle shoulder mobility'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Wednesday — Full Body + Shoulder + Knee Rehab',days:[3],desc:'Approx. 60 minutes total',sections:[
+['Warm-up — 5 min','5 minutes easy cardio + movement preparation'],
+['Shoulder preparation — 5 min','Band external rotations • face pulls • controlled mobility'],
+['Main workout — 35 min','Supported split squat / prescribed alternative — 3 x 8–10|Hip thrust — 3 x 8–12|Seated cable row — 3 x 8–12|Machine chest press (comfortable range) — 3 x 8–12|Hammer curl — 2 x 10–12'],
+['Core — 5 min','Pallof press — 3 x 10/side'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Thursday — Walk / Mobility + Knee Rehab',days:[4],desc:'Recovery-focused day',sections:[
+['Walk / activity — 30–45 min','Comfortable walk or knee-safe active recovery'],
+['Shoulder work — 5 min','Gentle mobility and external rotation work'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Friday — Upper Body + Shoulder + Knee Rehab',days:[5],desc:'Approx. 60 minutes total',sections:[
+['Warm-up — 5 min','5 minutes easy cardio + shoulder mobility'],
+['Shoulder preparation — 5 min','Band external rotations • face pulls • controlled mobility'],
+['Main workout — 35 min','Landmine press or comfortable press variation — 3 x 8–12|One-arm cable row — 3 x 8–12|Assisted pull-up / pulldown — 3 x 8–12|Rear-delt fly — 3 x 12–15|EZ-bar or dumbbell curl — 2 x 8–12|Rope triceps extension if pain-free — 2 x 10–12'],
+['Core — 5 min','Side plank — 3 x 30–45 sec/side'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Saturday — Flexible',days:[6],desc:'Walk, rest or optional Pilates',sections:[
+['Option 1 — Walk','30–60 minutes at a comfortable pace'],
+['Option 2 — Pilates','20–40 minute knee-safe at-home Pilates session (every 1–2 weeks)'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+]},
+{name:'Sunday — Stretch + Weekly Check-in',days:[0],desc:'Reset for the week',sections:[
+['Full-body stretching — 20–30 min','Gentle full-body mobility with shoulder, hip and ankle work'],
+['Knee Rehab — 10 min','Complete your prescribed knee rehabilitation programme'],
+['Weekly check-in — 5 min','Describe body changes, shoulders, knee, training and food'],
+]}
 ];
 
 const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){alert('Could not save: browser storage is full. Delete some old meal photos and try again.');return false}};
@@ -68,7 +104,7 @@ function suggestion(ex){const last=logs.find(l=>l.exercise===ex);if(!last)return
 function render(){
 const w=todayWorkout();document.getElementById('todayWorkout').textContent=w.name;document.getElementById('todayDesc').textContent=w.desc;document.getElementById('dayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long'}).toUpperCase();document.getElementById('weekCount').textContent=weekSessions()+'/3';
 const train=document.getElementById('workoutList');
-train.innerHTML=workouts.map((w,i)=>'<div class="card"><h2>'+escapeHtml(w.name)+'</h2><p class="muted">'+escapeHtml(w.desc)+'</p>'+w.ex.map((e,j)=>'<div class="exercise"><b>'+escapeHtml(e[0])+'</b><div class="muted">'+escapeHtml(e[1])+'</div><div class="suggest">'+escapeHtml(suggestion(e[0]))+'</div><div class="grid"><input id="wt'+i+'_'+j+'" placeholder="kg used" inputmode="decimal"><input id="rp'+i+'_'+j+'" placeholder="reps completed" inputmode="numeric"></div><button class="btn small" onclick="logSet('+i+','+j+')">Save set</button></div>').join('')+'</div>').join('');
+train.innerHTML=workouts.map((w,i)=>'<div class="card"><h2>'+escapeHtml(w.name)+'</h2><p class="muted">'+escapeHtml(w.desc)+'</p>'+w.sections.map((s,j)=>'<div class="exercise"><b>'+escapeHtml(s[0])+'</b>'+s[1].split('|').map((x,k)=>'<div class="muted" style="margin-top:6px">'+escapeHtml(x)+'</div>').join('')+(s[0].includes('Main workout')?'<div class="suggest">Log weights below as you progress.</div>':'')+'</div>').join('')+'<button class="btn" onclick="completeSession('+i+')">Mark session complete</button></div>').join('');
 const ml=document.getElementById('mealList');ml.innerHTML=meals.length?meals.slice(0,30).map(m=>'<div class="log">'+(m.type==='photo'?'<img class="mealimg" src="'+m.data+'" alt="Meal photo">':escapeHtml(m.data))+'<br><small class="muted">'+escapeHtml(m.date)+'</small></div>').join(''):'<p class="muted">Nothing logged yet.</p>';
 const rl=document.getElementById('rehabList');rl.innerHTML=rehab.length?rehab.map((r,i)=>'<div class="exercise"><div class="row"><div><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.detail)+'</div></div><input class="check" type="checkbox" '+(r.done?'checked':'')+' onchange="toggleRehab('+i+',this.checked)"></div></div>').join(''):'<p class="muted">Add the exercises your surgeon or physio has prescribed.</p>';
 const pl=document.getElementById('progressList');pl.innerHTML=logs.length?logs.slice(0,50).map(l=>'<div class="log"><b>'+escapeHtml(l.exercise)+'</b> — '+escapeHtml(l.weight)+' kg × '+escapeHtml(l.reps)+' reps<br><small class="muted">'+escapeHtml(l.when)+'</small></div>').join(''):'<p class="muted">Complete workouts to build your history.</p>';
@@ -76,7 +112,7 @@ const al=document.getElementById('activityList');al.innerHTML=activities.length?
 const checks=load('checkins'),cl=document.getElementById('checkinList');cl.innerHTML=checks.length?checks.slice(0,8).map(c=>'<div class="log"><b>'+escapeHtml(c.date)+'</b><br>'+escapeHtml(c.body||'')+'</div>').join(''):'<p class="muted">No previous check-ins yet.</p>';
 }
 
-function logSet(i,j){const wt=document.getElementById('wt'+i+'_'+j).value.trim(),rp=document.getElementById('rp'+i+'_'+j).value.trim();if(!wt||!rp)return alert('Enter the weight and reps first.');const weight=Number(wt),reps=Number(rp);if(!Number.isFinite(weight)||weight<0||!Number.isInteger(reps)||reps<1)return alert('Please enter a valid weight and whole number of reps.');logs.unshift({exercise:workouts[i].ex[j][0],weight,reps,when:new Date().toISOString()});store('formLogs',logs);alert('Saved. Your next suggested weight has been updated.');render();}
+function completeSession(i){activities.unshift({type:workouts[i].name+' completed',minutes:60,when:new Date().toISOString()});store('formActivities',activities);alert('Session completed. Great work.');render();}\nfunction logSet(i,j){const wt=document.getElementById('wt'+i+'_'+j).value.trim(),rp=document.getElementById('rp'+i+'_'+j).value.trim();if(!wt||!rp)return alert('Enter the weight and reps first.');const weight=Number(wt),reps=Number(rp);if(!Number.isFinite(weight)||weight<0||!Number.isInteger(reps)||reps<1)return alert('Please enter a valid weight and whole number of reps.');logs.unshift({exercise:workouts[i].ex[j][0],weight,reps,when:new Date().toISOString()});store('formLogs',logs);alert('Saved. Your next suggested weight has been updated.');render();}
 function logWalk(){const minutes=prompt('How many minutes did you walk or do active recovery?');if(minutes===null)return;const n=Number(minutes);if(!Number.isFinite(n)||n<=0)return alert('Please enter a valid number of minutes.');activities.unshift({type:'Walk / active recovery',minutes:n,when:new Date().toISOString()});store('formActivities',activities);render();alert('Activity logged.');}
 
 function compressImage(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.75));};img.src=r.result;};r.readAsDataURL(file);});}
